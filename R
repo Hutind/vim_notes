@@ -1,0 +1,65 @@
+R
+
+map("state")
+map("world")
+xlim<-c(-171.738281,-56.601563)
+ylim<-c(12.039321,71.856229)
+map("world",col="#f2f2f2",
+    fill=TRUE,bg="white",
+    lwd=0.05,xlim=xlim,
+    ylim=ylim)
+lat_ca<-39.163141
+lon_ca<--121.64062
+lat_me<-45.21300
+lon_me<--68.906250
+inter<-
+    gcIntermediate(c(lon_ca,lat_ca),c(lon_me,lat_me),n=50,addStartEnd=TRUE)
+lines(inter)
+lat_tx<-29.954935
+lon_tx<--98.701172
+inter2<-gcIntermediate(c(lon_ca,lat_ca),c(lon_tx,lat_tx),n=50,
+                       addStartEnd=TRUE)
+lines(inter2,col="red")
+airports<-read.csv("http://datasets.flowingdata.com/tuts/maparcs/airports.csv",header = TRUE)
+flights<-read.csv("http://datasets.flowingdata.com/tuts/maparcs/flights.csv",header = TRUE,as.is = TRUE)
+map("world",col="#f2f2f2",fill=TRUE,bg="white",lwd=0.05,xlim=xlim,ylim=ylim)
+fsub<-flights[flights$airline=="AA",]
+for (j in 1:length(fsub$airline)) {
+    air1<-airports[airports$iata==fsub[j,]$airport1,]
+    air2<-airports[airports$iata==fsub[j,]$airport2,]
+    
+    inter<-gcIntermediate(c(air1[1,]$long,air1[1,]$lat),c(air2[1,]$long,air2[1,]$lat),n=100,
+                          addStartEnd=TRUE)
+    lines(inter,col="black",lwd=0.8)
+}
+rain<-read.csv("**.csv")
+par(mfrow=c(4,1),mar=c(5,7,4,2),omi=c(0.2,2,0.2,2))
+for(i in 2:5)
+{
+plot(rain[,i],ann=FALSE,axes=FALSE,type="l",
+col="gray",lwd=2)
+mtext(side=4,at=mean(rain[,i]),name(rain[i]),
+	  las=2,col="black")
+mtext(side=4,at=mean(rain[,i]),mean(rain[i]),
+	  las=2,col="black")
+	  points(which.min(rain[,i]),min(rain[,i])pch=19,col="blue")
+	  points(which.max(rain[,i]),max(rain[,i]),pch=19,col="red")}
+xaxt="n",
+xlabels<-strptime(air$date,format="%d/%m/%Y%H:%M")
+axis.date(1,at=xlabels[xlabels$mday==1],format="%b-%Y")
+air$date=as.POSIXct(strptime(air$date,format="%d/%m/%Y%H:%M","GMT"))
+meas<-aggregate(air["nox"],format(air["date"],"%Y-%U"),mean,na.rm=TRUE)
+means$date<-seq(air$date[1],air$date[nrow(air)],length=nrow(means))
+plot(means$date,means$nox,type="l")
+aapl<-get.hist.quote(instrument="aapl",quote=c("Cl","Vol"))
+goog<-get.hist.quote(instrument="goog",quote=c("Cl","Vol"))
+msft<-get.hist.quote(instrument="msft",quote=c("Cl","Vol"))
+plot(msft$Close,main="Stock Price Comparison",
+	 ylim=c(0,800)col="red",type="l",lwd=0.5,
+	 pch=19,cex=0.6,xlab="Date",ylab="Stock Price(USD)")
+lines(goog$Close,col="blue",lwd=0.5)
+lines(aapl$Close,col="gray",lwd=0.5)
+legend("top",horiz=T,legend=c("Ms","Ggl","Apl")),
+col=c("red","blue","gray"),lty=1,bty="n"
+
+

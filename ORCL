@@ -1,0 +1,78 @@
+drop table t purge;
+create table t(x int primary key);
+insert into t values(1);
+commit;
+select distinct sid from v$mystat;
+update t set x=2 where x=1;
+desc v$lock;
+select sid,type,lmode,request,block from v$lock where type in ('TM','TX');
+desc v$locked_object;
+selct object_id,locked_mode from v$locked_object where sesion_id in (35,198);
+select object_name from dba_object where object_id=7;
+
+sqlplus test/test;
+commit;
+rollback;
+
+--rman恢复和备份
+backup tablespace ts1;
+alter database datafile 10 offline;
+shutdown abort;
+alter database open;
+startup;
+recover tablespace ts1;
+recover datafile 10;
+alter database datefile 10 online;
+conn test/test;
+select * from t;
+quit;
+cd \
+exp test/test fille=t.dmp;
+imp test/test file=t.dmp tables=t ignore=y;
+
+--data gard
+
+--闪回
+flashback database to scn ***;
+flashback database to '2:05' PM;
+desc v$database;
+select flashback_on from v$database;
+shutdown immediate;
+startup mount;
+alter database flashback on;
+
+drop table t;
+show recyclebin;
+flashback table t1 to before drop;
+drop table t1 purge;
+select sysdaya 时间,timestamp_to scn(sysdata) SCN fromdual;
+delect from flasback_table1 wherefid=2;
+commit;
+select *from flashback_table1;
+alter table flashback_table1 enable row movement;
+lashback table lashback_table1 to scn ***;
+select row fid,fname from flashback_table1;
+select *from jss_tblas of timestamp sysdata-5/1440;
+select * from jss_tbl as of scn ***;
+
+--RAC
+$ps -ef|grep crs;
+$crs_stat -t
+$sqlplus sys/1111@racdb1 as sysdba;
+select status from gv$instance;
+select instance_name,status from gv$instanc;
+desc gv$instance;
+select inst_id,group#,status from gv$log;
+show parameter spfile;
+archive log list;
+
+--data guard
+desc v$database;
+select database_role,guard_status,protection_mode from v$databse;
+show parameter arch;
+show paramater log;
+$tngsping db_phystdby;
+sqlplus sys/oracle@db_phystdby as sysdba;
+tail -100f $oracle_base/adim/phy;
+alter system archive log current;
+

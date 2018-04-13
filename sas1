@@ -1,0 +1,41 @@
+proc reg<>:
+	'var 变量表
+	by
+	freq
+	weight
+	add
+	delete
+	'
+'eg：
+proc coor;
+	var x y;
+run;
+proc reg;
+	model y=x;
+run;
+proc reg;
+	model y=x/NOINT;
+run;
+'
+proc reg data=fitness;
+	model X=Y Z;
+run;
+
+'鸢尾花数据集,多元线性回归'
+proc stepwise DATA =ep.oxys;
+	MODEL oxey=runtime age weight runpluse rstpluse
+run;:wq
+
+
+proc plot;
+	plot rate*times ='+';
+Run;
+proc nlin;
+	parms a=0 b=0;
+	model rate=exp(a+b*times)
+
+proc logistic descending;
+	model y=x1-x8/selection=stepwise sle=0.1 sls=0.1 stb;
+run;
+
+
